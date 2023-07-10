@@ -1,0 +1,16 @@
+{
+  "name": "har",
+  "version": "0.0.1",
+  "description": "Har Parser",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest --run"
+  },
+  "keywords": [],
+  "author": "ISON",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "vitest": "^0.33.0"
+  }
+}
