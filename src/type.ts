@@ -7,7 +7,7 @@ export interface Log {
   creator: Creator;
   browser: Browser;
   pages?: Page[];
-  enties: Entry[];
+  entries: Entry[];
   comment?: string;
 }
 

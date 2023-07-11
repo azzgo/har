@@ -2,6 +2,7 @@ import { Har } from "./type";
 import fs from "fs";
 import validator from "./validator";
 import { InvalidHarFormat, UnsupportSpecVersion } from "./error";
+import {HarObject} from "./wrapper";
 
 export function fromPath(path: string): Har | null {
   if (!fs.existsSync(path)) {
