@@ -1,7 +1,7 @@
 import { Har } from "./type";
 import fs from "fs";
 import validator from "./validator";
-import { InvalidHarFormat } from "./error";
+import { InvalidHarFormat, UnsupportSpecVersion } from "./error";
 
 export function fromPath(path: string): Har | null {
   if (!fs.existsSync(path)) {
@@ -16,6 +16,11 @@ export function fromString(content: string): Har | null {
     const json = JSON.parse(content);
     if (!validator.verify(json)) {
       throw new InvalidHarFormat("InvalidHarFormat");
+    }
+    if (!validator.checkVersion(json)) {
+      throw new UnsupportSpecVersion(
+        "HTTP Archive (HAR) format Only Support version 1.2"
+      );
     }
     return json;
   } catch (e) {

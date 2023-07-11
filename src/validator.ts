@@ -1,6 +1,7 @@
 import path from 'path'
 import Ajv, { ValidateFunction } from 'ajv'
 import fs from 'fs'
+import {Har} from './type'
 
 class Validator {
   private validate: ValidateFunction
@@ -12,6 +13,10 @@ class Validator {
 
   verify(json: any): boolean {
     return this.validate(json)
+  }
+
+  checkVersion(har: Har): boolean {
+    return har.log.version.trim() === "1.2"
   }
 }
 

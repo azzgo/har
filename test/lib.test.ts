@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { fromPath, fromString } from "../src/lib";
 import path from "path";
 import fs from "fs";
-import { InvalidHarFormat } from "../src/error";
+import { InvalidHarFormat, UnsupportSpecVersion } from "../src/error";
 
 test("read har from file", () => {
   // sample copy from https://gist.github.com/ericduran/6330201
@@ -28,3 +28,9 @@ test("throw exception when format wrong", () => {
     new InvalidHarFormat("InvalidHarFormat")
   );
 });
+
+test('only version 1.2 is valid', () => {
+  expect(() => fromString('{ "log": { "version": "1.0" } }')).toThrowError(
+    new UnsupportSpecVersion("HTTP Archive (HAR) format Only Support version 1.2")
+  );
+})
