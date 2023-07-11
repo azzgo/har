@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Har Parser",
   "main": "dist/lib.js",
+  "types": "dist/lib.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "vitest --run",
     "update-schema": "typescript-json-schema src/type.ts Har > src/har-schema.json"
   },
@@ -11,6 +13,7 @@
   "author": "ISON",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^20.4.1",
     "typescript": "^5.1.6",
     "typescript-json-schema": "^0.58.1",
     "vitest": "^0.33.0"
