@@ -1,18 +1,24 @@
 import { Har } from "./type";
-import fs from 'fs'
+import fs from "fs";
+import validator from "./validator";
+import { InvalidHarFormat } from "./error";
 
 export function fromPath(path: string): Har | null {
   if (!fs.existsSync(path)) {
-    return null
+    return null;
   }
-  const content = fs.readFileSync(path, { encoding: 'utf-8' });
-  return fromString(content)
+  const content = fs.readFileSync(path, { encoding: "utf-8" });
+  return fromString(content);
 }
 
 export function fromString(content: string): Har | null {
   try {
-    return JSON.parse(content)
+    const json = JSON.parse(content);
+    if (!validator.verify(json)) {
+      throw new InvalidHarFormat("InvalidHarFormat");
+    }
+    return json;
   } catch (e) {
-    throw e
+    throw e;
   }
 }
