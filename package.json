@@ -2,7 +2,7 @@
   "name": "har",
   "version": "0.0.1",
   "description": "Har Parser",
-  "main": "dist/index.js",
+  "main": "dist/lib.js",
   "scripts": {
     "test": "vitest --run",
     "update-schema": "typescript-json-schema src/type.ts Har > src/har-schema.json"
