@@ -33,7 +33,8 @@ export class HarWrapper {
 export class EntryWrapper {
   constructor(private entries: Entry[]) {}
 
-  filter(): Entry[] {
+  filterByHttpMethod(method: string): Entry[] {
+    return this.entries.filter((entry) => entry.request.method.toLowerCase() === method.toLowerCase().trim())
   }
 }
 

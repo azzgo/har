@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { EntryWrapper, HarWrapper, PageWrapper } from "../src/wrapper";
-import { createEntry, createHar, createPage } from "./test-factories";
+import { createEntry, createHar, createPage, createRequest } from "./test-factories";
 
 test("create a Har Wrapper", () => {
   const har = {
@@ -45,3 +45,28 @@ test("can get Page Wrapper", () => {
 
   expect(wrapper.pageWrapper).toBeInstanceOf(PageWrapper);
 });
+
+test('EntryWrapper can filter entry by HTTP method', () => {
+  const entry1 = createEntry({ request: createRequest({ method: 'POST' }) })
+  const entry2 = createEntry({ request: createRequest({ method: 'POST' }) })
+  const entry3 = createEntry({ request: createRequest({ method: 'GET' }) })
+  const entry4 = createEntry({ request: createRequest({ method: 'PATCH' }) })
+  const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4])
+
+  const postEntries = wrapper.filterByHttpMethod('POST')
+  expect(postEntries.length).toEqual(2)
+  expect(postEntries.indexOf(entry1)).greaterThan(-1)
+  expect(postEntries.indexOf(entry2)).greaterThan(-1)
+  
+  const getEntries = wrapper.filterByHttpMethod('GET')
+  expect(getEntries.length).toEqual(1)
+  expect(getEntries[0]).toEqual(entry3)
+
+  const patchEntries = wrapper.filterByHttpMethod('patch')
+  expect(patchEntries.length).toEqual(1)
+  expect(patchEntries[0]).toEqual(entry4)
+
+  expect(wrapper.filterByHttpMethod('delete')).toEqual([])
+  expect(wrapper.filterByHttpMethod('HEAD')).toEqual([])
+  expect(wrapper.filterByHttpMethod('put')).toEqual([])
+})
