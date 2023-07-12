@@ -32,6 +32,9 @@ export class HarWrapper {
 
 export class EntryWrapper {
   constructor(private entries: Entry[]) {}
+
+  filter(): Entry[] {
+  }
 }
 
 export class PageWrapper {

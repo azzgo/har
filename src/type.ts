@@ -56,7 +56,7 @@ export interface Request {
   httpVersion: string;
   cookies: Cookie[];
   headers: Header[];
-  querystring: Querystring[];
+  queryString: Querystring[];
   postData?: PostData;
   headersSize: number;
   bodySize: number;
