@@ -68,6 +68,13 @@ export class EntryWrapper {
       }, true);
     });
   }
+
+  filterByStatus(filterOrFilterFn: ((status: number) => boolean) | number): Entry[] {
+    if (typeof filterOrFilterFn === 'function') {
+      return this.entries.filter((entry) => filterOrFilterFn(entry.response.status))
+    }
+    return this.entries.filter((entry) => filterOrFilterFn === entry.response.status)
+  }
 }
 
 export class PageWrapper {

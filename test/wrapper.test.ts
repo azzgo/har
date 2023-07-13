@@ -106,4 +106,17 @@ describe("EntryWrapper", () => {
     expect(wrapper.filterByResponseHeader({ host: 'example.com' }).length).toEqual(2)
     expect(wrapper.filterByResponseHeader({ 'content-type': 'text/plain', host: 'example.com' }).length).toEqual(1)
   })
+
+  test('can filter by response status', () => {
+    const entry1 = createEntry({ response: createResponse({ status: 200 }) });
+    const entry2 = createEntry({ response: createResponse({ status: 302 }) });
+    const entry3 = createEntry({ response: createResponse({ status: 401 }) });
+    const entry4 = createEntry({ response: createResponse({ status: 403 }) });
+    const entry5 = createEntry({ response: createResponse({ status: 200 }) });
+
+    const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4, entry5]);
+
+    expect(wrapper.filterByStatus((status) => status >= 400 && status < 500).length).toEqual(2)
+    expect(wrapper.filterByStatus(200).length).toEqual(2)
+  })
 })
