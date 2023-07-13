@@ -31,6 +31,19 @@ export class HarWrapper {
 }
 
 export class EntryWrapper {
+  filterByRequestHeader(headers: Record<string, string>): Entry[] {
+    const _headers = Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value]);
+    return this.entries.filter((entry) => {
+      if (entry.request.headers.length === 0) return false
+      return _headers.reduce((result, current) => {
+        const header = entry.request.headers.find(header => header.name.toLowerCase() === current[0])
+        if (header && header.value === current[1]) {
+          return result && true
+        }
+        return false
+      }, true)
+    })
+  }
   constructor(private entries: Entry[]) {}
 
   filterByHttpMethod(method: string): Entry[] {

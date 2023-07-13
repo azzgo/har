@@ -1,4 +1,13 @@
-import { Content, Entry, Har, Log, Page, Request, Response } from "../src/type";
+import {
+  Content,
+  Entry,
+  Har,
+  Header,
+  Log,
+  Page,
+  Request,
+  Response,
+} from "../src/type";
 
 export function createHar({ entries = [], pages = [] }: Partial<Log>): Har {
   return {
@@ -130,3 +139,26 @@ export function createPage({
     comment: "",
   };
 }
+
+export function createHeader({
+  name = "Content-Type",
+  value = "text/plain",
+  comment,
+}: Partial<Header>): Header {
+  return {
+    name,
+    value,
+    comment,
+  };
+}
+
+export const createHeaderAuthorization = (authorization: string) =>
+  createHeader({ name: "Authorization", value: authorization });
+export const createHeaderContentType = (contentType: string) =>
+  createHeader({ name: "Content-Type", value: contentType });
+export const createHeaderHost = (host: string) =>
+  createHeader({ name: "Host", value: host });
+export const createHeaderReferer = (referer: string) =>
+  createHeader({ name: "Referer", value: referer });
+export const createHeaderServer = (server: string) =>
+  createHeader({ name: "Server", value: server });

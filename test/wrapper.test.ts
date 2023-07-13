@@ -3,6 +3,10 @@ import { EntryWrapper, HarWrapper, PageWrapper } from "../src/wrapper";
 import {
   createEntry,
   createHar,
+  createHeaderContentType,
+  createHeaderHost,
+  createHeaderReferer,
+  createHeaderServer,
   createPage,
   createRequest,
 } from "./test-factories";
@@ -53,27 +57,41 @@ describe("Har Wrapper", () => {
   });
 });
 
-test("EntryWrapper can filter entry by HTTP method", () => {
-  const entry1 = createEntry({ request: createRequest({ method: "POST" }) });
-  const entry2 = createEntry({ request: createRequest({ method: "POST" }) });
-  const entry3 = createEntry({ request: createRequest({ method: "GET" }) });
-  const entry4 = createEntry({ request: createRequest({ method: "PATCH" }) });
-  const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4]);
+describe("EntryWrapper", () => {
+  test(" can filter entry by HTTP method", () => {
+    const entry1 = createEntry({ request: createRequest({ method: "POST" }) });
+    const entry2 = createEntry({ request: createRequest({ method: "POST" }) });
+    const entry3 = createEntry({ request: createRequest({ method: "GET" }) });
+    const entry4 = createEntry({ request: createRequest({ method: "PATCH" }) });
+    const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4]);
 
-  const postEntries = wrapper.filterByHttpMethod("POST");
-  expect(postEntries.length).toEqual(2);
-  expect(postEntries.indexOf(entry1)).greaterThan(-1);
-  expect(postEntries.indexOf(entry2)).greaterThan(-1);
+    const postEntries = wrapper.filterByHttpMethod("POST");
+    expect(postEntries.length).toEqual(2);
+    expect(postEntries.indexOf(entry1)).greaterThan(-1);
+    expect(postEntries.indexOf(entry2)).greaterThan(-1);
 
-  const getEntries = wrapper.filterByHttpMethod("GET");
-  expect(getEntries.length).toEqual(1);
-  expect(getEntries[0]).toEqual(entry3);
+    const getEntries = wrapper.filterByHttpMethod("GET");
+    expect(getEntries.length).toEqual(1);
+    expect(getEntries[0]).toEqual(entry3);
 
-  const patchEntries = wrapper.filterByHttpMethod("patch");
-  expect(patchEntries.length).toEqual(1);
-  expect(patchEntries[0]).toEqual(entry4);
+    const patchEntries = wrapper.filterByHttpMethod("patch");
+    expect(patchEntries.length).toEqual(1);
+    expect(patchEntries[0]).toEqual(entry4);
 
-  expect(wrapper.filterByHttpMethod("delete")).toEqual([]);
-  expect(wrapper.filterByHttpMethod("HEAD")).toEqual([]);
-  expect(wrapper.filterByHttpMethod("put")).toEqual([]);
-});
+    expect(wrapper.filterByHttpMethod("delete")).toEqual([]);
+    expect(wrapper.filterByHttpMethod("HEAD")).toEqual([]);
+    expect(wrapper.filterByHttpMethod("put")).toEqual([]);
+  });
+
+  test("can filter By Request Header", () => {
+    const entry1 = createEntry({ request: createRequest({ headers: [ createHeaderHost('example.com') ] }) });
+    const entry2 = createEntry({ request: createRequest({ headers: [ createHeaderServer('apache')] }) });
+    const entry3 = createEntry({ request: createRequest({ headers: [ createHeaderReferer('https://www.google.com/search?q=hello+world') ] }) });
+    const entry4 = createEntry({ request: createRequest({ headers: [ createHeaderHost('example.com'), createHeaderContentType('text/plain')] }) });
+
+    const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4]);
+
+    expect(wrapper.filterByRequestHeader({ host: 'example.com' }).length).toEqual(2)
+    expect(wrapper.filterByRequestHeader({ 'content-type': 'text/plain', host: 'example.com' }).length).toEqual(1)
+  })
+})
