@@ -1,6 +1,6 @@
 {
   "name": "harblz",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Har Parser with some Wrapper utils",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",
