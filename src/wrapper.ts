@@ -75,6 +75,10 @@ export class EntryWrapper {
     }
     return this.entries.filter((entry) => filterOrFilterFn === entry.response.status)
   }
+
+  filterByMimeType(mineType: string): Entry[] {
+    return this.entries.filter((entry) => mineType === entry.response.content.mimeType)
+  }
 }
 
 export class PageWrapper {

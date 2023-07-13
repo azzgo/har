@@ -1,9 +1,8 @@
 import { expect, test } from "vitest";
-import { fromPath, fromString, Har } from "../src/lib";
+import { fromPath, fromString } from "../src/lib";
 import path from "path";
 import fs from "fs";
 import { InvalidHarFormat, UnsupportSpecVersion } from "../src/error";
-import { HarObject } from '../src/wrapper'
 
 test("read har from file", () => {
   // sample copy from https://gist.github.com/ericduran/6330201

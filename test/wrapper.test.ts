@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { EntryWrapper, HarWrapper, PageWrapper } from "../src/wrapper";
 import {
+  createContent,
   createEntry,
   createHar,
   createHeaderContentType,
@@ -85,29 +86,77 @@ describe("EntryWrapper", () => {
   });
 
   test("can filter By Request Header", () => {
-    const entry1 = createEntry({ request: createRequest({ headers: [ createHeaderHost('example.com') ] }) });
-    const entry2 = createEntry({ request: createRequest({ headers: [ createHeaderServer('apache')] }) });
-    const entry3 = createEntry({ request: createRequest({ headers: [ createHeaderReferer('https://www.google.com/search?q=hello+world') ] }) });
-    const entry4 = createEntry({ request: createRequest({ headers: [ createHeaderHost('example.com'), createHeaderContentType('text/plain')] }) });
+    const entry1 = createEntry({
+      request: createRequest({ headers: [createHeaderHost("example.com")] }),
+    });
+    const entry2 = createEntry({
+      request: createRequest({ headers: [createHeaderServer("apache")] }),
+    });
+    const entry3 = createEntry({
+      request: createRequest({
+        headers: [
+          createHeaderReferer("https://www.google.com/search?q=hello+world"),
+        ],
+      }),
+    });
+    const entry4 = createEntry({
+      request: createRequest({
+        headers: [
+          createHeaderHost("example.com"),
+          createHeaderContentType("text/plain"),
+        ],
+      }),
+    });
 
     const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4]);
 
-    expect(wrapper.filterByRequestHeader({ host: 'example.com' }).length).toEqual(2)
-    expect(wrapper.filterByRequestHeader({ 'content-type': 'text/plain', host: 'example.com' }).length).toEqual(1)
-  })
+    expect(
+      wrapper.filterByRequestHeader({ host: "example.com" }).length
+    ).toEqual(2);
+    expect(
+      wrapper.filterByRequestHeader({
+        "content-type": "text/plain",
+        host: "example.com",
+      }).length
+    ).toEqual(1);
+  });
   test("can filter By Response Header", () => {
-    const entry1 = createEntry({ response: createResponse({ headers: [ createHeaderHost('example.com') ] }) });
-    const entry2 = createEntry({ response: createResponse({ headers: [ createHeaderServer('apache')] }) });
-    const entry3 = createEntry({ response: createResponse({ headers: [ createHeaderReferer('https://www.google.com/search?q=hello+world') ] }) });
-    const entry4 = createEntry({ response: createResponse({ headers: [ createHeaderHost('example.com'), createHeaderContentType('text/plain')] }) });
+    const entry1 = createEntry({
+      response: createResponse({ headers: [createHeaderHost("example.com")] }),
+    });
+    const entry2 = createEntry({
+      response: createResponse({ headers: [createHeaderServer("apache")] }),
+    });
+    const entry3 = createEntry({
+      response: createResponse({
+        headers: [
+          createHeaderReferer("https://www.google.com/search?q=hello+world"),
+        ],
+      }),
+    });
+    const entry4 = createEntry({
+      response: createResponse({
+        headers: [
+          createHeaderHost("example.com"),
+          createHeaderContentType("text/plain"),
+        ],
+      }),
+    });
 
     const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4]);
 
-    expect(wrapper.filterByResponseHeader({ host: 'example.com' }).length).toEqual(2)
-    expect(wrapper.filterByResponseHeader({ 'content-type': 'text/plain', host: 'example.com' }).length).toEqual(1)
-  })
+    expect(
+      wrapper.filterByResponseHeader({ host: "example.com" }).length
+    ).toEqual(2);
+    expect(
+      wrapper.filterByResponseHeader({
+        "content-type": "text/plain",
+        host: "example.com",
+      }).length
+    ).toEqual(1);
+  });
 
-  test('can filter by response status', () => {
+  test("can filter by response status", () => {
     const entry1 = createEntry({ response: createResponse({ status: 200 }) });
     const entry2 = createEntry({ response: createResponse({ status: 302 }) });
     const entry3 = createEntry({ response: createResponse({ status: 401 }) });
@@ -116,7 +165,57 @@ describe("EntryWrapper", () => {
 
     const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4, entry5]);
 
-    expect(wrapper.filterByStatus((status) => status >= 400 && status < 500).length).toEqual(2)
-    expect(wrapper.filterByStatus(200).length).toEqual(2)
-  })
-})
+    expect(
+      wrapper.filterByStatus((status) => status >= 400 && status < 500).length
+    ).toEqual(2);
+    expect(wrapper.filterByStatus(200).length).toEqual(2);
+  });
+
+  test("can filter by response content mimeType", () => {
+    const entry1 = createEntry({
+      response: createResponse({
+        content: createContent({
+          mimeType: "text/plain",
+          text: "Hello Server",
+        }),
+      }),
+    });
+    const entry2 = createEntry({
+      response: createResponse({
+        content: createContent({
+          mimeType: "text/html",
+          text: "<html><head><title>example</title></head><body><h1>Hello Server</h1></body></html>",
+        }),
+      }),
+    });
+    const entry3 = createEntry({
+      response: createResponse({
+        content: createContent({
+          mimeType: "application/json",
+          text: "{ \"name\": \"Alice\", \"role\": \"buyer\" }",
+        }),
+      }),
+    });
+    const entry4 = createEntry({
+      response: createResponse({
+        content: createContent({
+          mimeType: "application/json",
+          text: "{ \"name\": \"Bob\", \"role\": \"seller\" }",
+        }),
+      }),
+    });
+    const entry5 = createEntry({
+      response: createResponse({
+        status: 500,
+        content: createContent({
+          mimeType: "text/plain",
+          text: "Server Error",
+        }),
+      }),
+    });
+    const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4, entry5]);
+
+    expect(wrapper.filterByMimeType('application/json').length).toEqual(2)
+    expect(wrapper.filterByMimeType('text/plain').length).toEqual(2)
+  });
+});
