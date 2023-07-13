@@ -4,6 +4,7 @@
   "description": "A Har Parser with some Wrapper utils",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",
+  "homepage": "https://github.com/azzgo/har",
   "scripts": {
     "build": "tsc",
     "test": "vitest --run --coverage",
