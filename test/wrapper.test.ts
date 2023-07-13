@@ -9,6 +9,7 @@ import {
   createHeaderServer,
   createPage,
   createRequest,
+  createResponse,
 } from "./test-factories";
 
 test("create a Har Wrapper", () => {
@@ -93,5 +94,16 @@ describe("EntryWrapper", () => {
 
     expect(wrapper.filterByRequestHeader({ host: 'example.com' }).length).toEqual(2)
     expect(wrapper.filterByRequestHeader({ 'content-type': 'text/plain', host: 'example.com' }).length).toEqual(1)
+  })
+  test("can filter By Response Header", () => {
+    const entry1 = createEntry({ response: createResponse({ headers: [ createHeaderHost('example.com') ] }) });
+    const entry2 = createEntry({ response: createResponse({ headers: [ createHeaderServer('apache')] }) });
+    const entry3 = createEntry({ response: createResponse({ headers: [ createHeaderReferer('https://www.google.com/search?q=hello+world') ] }) });
+    const entry4 = createEntry({ response: createResponse({ headers: [ createHeaderHost('example.com'), createHeaderContentType('text/plain')] }) });
+
+    const wrapper = new EntryWrapper([entry1, entry2, entry3, entry4]);
+
+    expect(wrapper.filterByResponseHeader({ host: 'example.com' }).length).toEqual(2)
+    expect(wrapper.filterByResponseHeader({ 'content-type': 'text/plain', host: 'example.com' }).length).toEqual(1)
   })
 })
