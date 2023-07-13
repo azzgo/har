@@ -1,0 +1,15 @@
+# sources
+src/
+test/
+
+# Config file
+vitest.config.ts
+
+# version control
+.git/
+
+# lock file
+pnpm-lock.yaml
+
+# Misc
+**/*.DS_Store
